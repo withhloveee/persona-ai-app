@@ -4,14 +4,13 @@ import os
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/result": {"origins": "http://localhost:5173"}})
+CORS(app)
 
 # TEMP MEMORY: {shared for all users}
 chat_history = []
 
-@app.route("/result", methods=["POST"])
+@app.route("/chat", methods=["POST"])
 def result():
-
     data = request.json
     user_msg = data.get("message", "")
 
@@ -47,7 +46,7 @@ Use phrases like these rarely when they fit:
 
         full_response = ""
 
-        with OpenRouter(api_key=os.getenv("go")) as client:
+        with OpenRouter(api_key=os.getenv("key")) as client:
 
             stream = client.chat.send(
                 model="openai/gpt-oss-120b:free",
@@ -86,5 +85,76 @@ Use phrases like these rarely when they fit:
             "Transfer-Encoding": "chunked"
         }
     )
+
+@app.route("/summarize", methods=["POST"])
+def summarize():
+
+    data = request.json
+    text = data.get("text", "")
+
+    if not text:
+        return {"error": "No text provided"}, 400
+
+    def generate():
+
+        with OpenRouter(api_key=os.getenv("key")) as client:
+
+            stream = client.chat.send(
+                model="openai/gpt-oss-120b:free",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": """
+You are a markdown summarizer.
+
+Convert the user's text into clean markdown notes.
+
+Format:
+# Title
+
+## Overview
+
+## Key Points
+
+## Important Concepts
+
+## Final Takeaway
+
+Rules:
+- Return ONLY markdown
+- Keep it concise
+- Use bullets
+"""
+                    },
+                    {
+                        "role": "user",
+                        "content": text
+                    }
+                ],
+                stream=True,
+                max_tokens=1024
+            )
+
+            for event in stream:
+
+                if not event.choices:
+                    continue
+
+                delta = event.choices[0].delta
+
+                if hasattr(delta, "content") and delta.content:
+                    yield delta.content
+
+    return Response(
+        stream_with_context(generate()),
+        mimetype="text/plain",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 app.run(debug=True)
