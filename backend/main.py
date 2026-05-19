@@ -2,9 +2,18 @@ from flask import Flask, Response, request, stream_with_context
 from openrouter import OpenRouter
 import os
 from flask_cors import CORS
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 CORS(app)
+load_dotenv()
+
+# Importing: { keys }
+API_KEY = os.getenv("API_KEY")
+REDIS_URL = os.getenv("REDIS_URL")
+
+print(API_KEY)
+print(REDIS_URL)
 
 # TEMP MEMORY: {shared for all users}
 chat_history = []
@@ -46,7 +55,7 @@ Use phrases like these rarely when they fit:
 
         full_response = ""
 
-        with OpenRouter(api_key=os.getenv("key")) as client:
+        with OpenRouter(api_key=API_KEY) as client:
 
             stream = client.chat.send(
                 model="openai/gpt-oss-120b:free",
@@ -97,7 +106,7 @@ def summarize():
 
     def generate():
 
-        with OpenRouter(api_key=os.getenv("key")) as client:
+        with OpenRouter(api_key=API_KEY) as client:
 
             stream = client.chat.send(
                 model="openai/gpt-oss-120b:free",
