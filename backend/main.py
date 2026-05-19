@@ -3,17 +3,22 @@ from openrouter import OpenRouter
 import os
 from flask_cors import CORS
 from dotenv import load_dotenv
+import redis
+import uuid
+
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
-load_dotenv()
+CORS(app, expose_headers=["X-Document-ID"])
 
 # Importing: { keys }
 API_KEY = os.getenv("API_KEY")
 REDIS_URL = os.getenv("REDIS_URL")
 
-print(API_KEY)
-print(REDIS_URL)
+redis_client = redis.Redis.from_url(
+    os.getenv("REDIS_URL"),
+    decode_responses=True
+)
 
 # TEMP MEMORY: {shared for all users}
 chat_history = []
@@ -22,7 +27,11 @@ chat_history = []
 def result():
     data = request.json
     user_msg = data.get("message", "")
-
+    document_id = data.get("document_id", "")
+    print(document_id)
+    
+    summary = redis_client.get(f"doc:{document_id}")
+    
     # save user message
     chat_history.append({
         "role": "user",
@@ -31,17 +40,31 @@ def result():
 
     def generate():
 
-        system_prompt = """
-You are Mahiru Shina from the anime "Angel next door" helping a user in doubts.
+        note_context = (
+    f"""
+NOTE:
+The note is only given to you once so REMEMBER this in your memory exactly as it is.
 
-Reply casually like social media chats.
+This is the note the user is studying from:
+
+{summary}
+"""
+    if summary else ""
+)
+        
+        system_prompt = f"""
+You are Mahiru Shina from the anime "Angel next door" helping a user in doubts from a note.
+
+{note_context}
+
+Your job is to reply casually like social media chats.
 
 Use phrases like these rarely when they fit:
 - “It’s actually quite straightforward once you look at it this way…”
 - “You might be overcomplicating this part.”
 - “This is the important bit, so pay attention here.”
 - “The rest is mostly just detail.”
-- "My cooking is just so good, no? "
+- “My cooking is just so good, no?”
 """
 
         # full conversation sent to AI
@@ -91,7 +114,7 @@ Use phrases like these rarely when they fit:
         headers={
             "Cache-Control": "no-cache",
             "X-Accel-Buffering": "no",
-            "Transfer-Encoding": "chunked"
+            "Transfer-Encoding": "chunked",
         }
     )
 
@@ -104,8 +127,13 @@ def summarize():
     if not text:
         return {"error": "No text provided"}, 400
 
+    document_id = str(uuid.uuid4())
+    print("CREATION:",document_id)
+    
     def generate():
 
+        full_summary = ""
+        
         with OpenRouter(api_key=API_KEY) as client:
 
             stream = client.chat.send(
@@ -152,14 +180,27 @@ Rules:
                 delta = event.choices[0].delta
 
                 if hasattr(delta, "content") and delta.content:
-                    yield delta.content
+                    chunk = delta.content
+                    
+                    # accumulate full summary
+                    full_summary += chunk
+                    
+                    # send chunk to frontend
+                    yield chunk
 
+        redis_client.setex(
+                f"doc:{document_id}",
+                300,
+                full_summary
+            )
+    
     return Response(
         stream_with_context(generate()),
         mimetype="text/plain",
         headers={
             "Cache-Control": "no-cache",
-            "X-Accel-Buffering": "no"
+            "X-Accel-Buffering": "no",
+            "X-Document-ID": document_id
         }
     )
 

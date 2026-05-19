@@ -73,19 +73,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref,watch  } from 'vue'
 import { marked } from "marked"
+import { useSummaryStore } from '@/stores/chat'
 
 import { fetchAIResponse } from '@/composables/fetchAIResponse'
 
-const userInput = ref('')
 
-const messages = ref([
-  {
-    role: 'assistant',
-    content: 'Heyyy! 🌼 — ask any doubts about the notes.'
-  }
-])
+const summaryStore = useSummaryStore()
+
+const userInput = ref('')
+const messages = ref([])
 
 async function sendMessage() {
 
@@ -113,6 +111,32 @@ async function sendMessage() {
     aiMessage.value.content += chunk
   })
 
-  console.log(aiMessage)
+  console.log(messages.value)
 }
+
+watch(
+  () => summaryStore.summaryReady,
+  async (ready) => {
+
+    if (!ready) return
+
+    const documentId = sessionStorage.getItem("document_id")
+    const aiMessage = ref({
+      role: 'assistant',
+      content: ''
+    })
+
+    messages.value.push(aiMessage.value)
+
+    await fetchAIResponse(
+      "Say hello and ask user for doubts about the notes.",
+      (chunk) => {
+        aiMessage.value.content += chunk~~~
+      },
+      documentId
+    )
+  }
+)
+
+
 </script>   

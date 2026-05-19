@@ -3,6 +3,7 @@ import { useSummaryStore } from "@/stores/chat"
 export async function summarizeText(text) {
 
     const summaryStore = useSummaryStore()
+    summaryStore.summaryReady = false
 
     // clear old markdown
     summaryStore.markdown = ""
@@ -17,6 +18,11 @@ export async function summarizeText(text) {
         })
     })
 
+    // store the id to { session-storage }
+    const documentId = res.headers.get("X-Document-ID")
+    console.log("WHAT I GOT IS ", documentId)
+    sessionStorage.setItem("document_id", documentId)
+
     const reader = res.body.getReader()
     const decoder = new TextDecoder()
 
@@ -24,7 +30,10 @@ export async function summarizeText(text) {
 
         const { done, value } = await reader.read()
 
-        if (done) break
+        if (done) {
+            summaryStore.summaryReady = true
+            break
+        }
 
         const chunk = decoder.decode(value)
 
