@@ -36,7 +36,7 @@
         >
           <div
             class="bg-light p-2 rounded border markdown-body"
-            v-html="marked(message.content)"
+            v-html="message.rendered || marked(message.content)"
           ></div>
         </div>
 
@@ -78,8 +78,10 @@ import { marked } from "marked"
 import { useSummaryStore } from '@/stores/chat'
 
 import { fetchAIResponse } from '@/composables/fetchAIResponse'
+import markedKatex from "marked-katex-extension"
+import "katex/dist/katex.min.css"
 
-
+marked.use(markedKatex())
 const summaryStore = useSummaryStore()
 
 const userInput = ref('')
@@ -101,7 +103,8 @@ async function sendMessage() {
   // plain object
   const aiMessage = ref({
     role: 'assistant',
-    content: ''
+    content: '',
+    rendered: ''
 })
 
   messages.value.push(aiMessage.value)
@@ -111,7 +114,7 @@ async function sendMessage() {
     aiMessage.value.content += chunk
   })
 
-  console.log(messages.value)
+  aiMessage.value.rendered = marked(aiMessage.value.content)
 }
 
 watch(
@@ -131,10 +134,11 @@ watch(
     await fetchAIResponse(
       "Say hello and ask user for doubts about the notes.",
       (chunk) => {
-        aiMessage.value.content += chunk~~~
+        aiMessage.value.content += chunk
       },
       documentId
     )
+    
   }
 )
 

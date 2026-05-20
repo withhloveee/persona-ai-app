@@ -1,6 +1,6 @@
 <template>
 
-  <div class="d-flex flex-column h-100">
+  <div class="d-flex flex-column ps-4 h-100">
 
     <!-- HEADER -->
     <div class="border-bottom p-3">
@@ -9,15 +9,98 @@
 
     <!-- CONTENT -->
     <div
-    class="flex-grow-1 p-3 chat-scroll"
-    style="min-height: 0;"
+      class="flex-grow-1 p-3 chat-scroll d-flex flex-column"
+      style="min-height: 0;"
     >
+
+      <!-- REAL CONTENT -->
       <div
         v-if="markdown"
         v-html="parsedMarkdown"
       ></div>
 
-      <p v-else>Please wait for data to arrive.</p>
+      <!-- SKELETON -->
+      <div
+        v-else
+        class="placeholder-glow w-100 h-100 d-flex flex-column"
+      >
+        <!-- MAIN TITLE -->
+        <div class="mb-4">
+          <div
+            class="placeholder col-5"
+            style="height: 42px;"
+          ></div>
+        </div>
+
+        <!-- SUBTITLE -->
+        <div class="mb-3">
+          <div
+            class="placeholder col-3"
+            style="height: 28px;"
+          ></div>
+        </div>
+
+        <!-- PARAGRAPH -->
+        <div class="mb-5">
+
+          <div
+            class="placeholder col-12 mb-2"
+            style="height: 18px;"
+          ></div>
+
+          <div
+            class="placeholder col-12 mb-2"
+            style="height: 18px;"
+          ></div>
+
+          <div
+            class="placeholder col-10 mb-2"
+            style="height: 18px;"
+          ></div>
+
+          <div
+            class="placeholder col-8"
+            style="height: 18px;"
+          ></div>
+
+        </div>
+
+        <!-- SECOND HEADING -->
+        <div class="mb-3">
+          <div
+            class="placeholder col-4"
+            style="height: 30px;"
+          ></div>
+        </div>
+
+        <!-- SECOND PARAGRAPH -->
+        <div class="mb-4">
+
+          <div
+            class="placeholder col-12 mb-2"
+            style="height: 18px;"
+          ></div>
+
+          <div
+            class="placeholder col-12 mb-2"
+            style="height: 18px;"
+          ></div>
+
+          <div
+            class="placeholder col-9"
+            style="height: 18px;"
+          ></div>
+
+        </div>
+
+        <!-- LARGE CONTENT AREA -->
+        <div
+          class="placeholder col-12 flex-grow-1"
+          style="min-height: 300px;"
+        ></div>
+
+      </div>
+
     </div>
 
   </div>
@@ -27,15 +110,20 @@
 <script setup>
 import { computed } from "vue"
 import { marked } from "marked"
+import markedKatex from "marked-katex-extension"
+import "katex/dist/katex.min.css"
 
 import { useSummaryStore } from "@/stores/chat"
 import { storeToRefs } from "pinia"
 
+marked.use(markedKatex())
 const chatStore = useSummaryStore()
 
 const { markdown } = storeToRefs(chatStore)
 
+
 const parsedMarkdown = computed(() => {
     return marked(markdown.value)
 })
+console.log(markdown.value)
 </script>
