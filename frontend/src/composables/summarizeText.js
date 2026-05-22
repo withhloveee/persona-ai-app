@@ -4,19 +4,27 @@ export async function summarizeText(text) {
 
     const summaryStore = useSummaryStore()
     summaryStore.summaryReady = false
+    const token = localStorage.getItem("token")
 
     // clear old markdown
     summaryStore.markdown = ""
 
-    const res = await fetch("http://localhost:5000/summarize", {
+    try {
+        const res = await fetch("http://127.0.0.1:8000/summarize", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
             text: text
         })
     })
+
+    if(res.status === 422){
+        summaryStore.markdown += "It was found you are not logged in."
+        return
+    }
 
     // store the id to { session-storage }
     const documentId = res.headers.get("X-Document-ID")
@@ -40,4 +48,8 @@ export async function summarizeText(text) {
         // THIS triggers live rendering
         summaryStore.markdown += chunk
     }
+    } catch (error) {
+        console.log("From catch:", error)
+    }
+
 }
