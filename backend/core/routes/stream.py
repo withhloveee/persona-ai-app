@@ -4,9 +4,10 @@ import os
 from dotenv import load_dotenv
 import redis
 import uuid
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from core.db import Users
 
-from main import app
+from main import app,db
 
 load_dotenv()
 
@@ -28,6 +29,16 @@ def result():
     user_msg = data.get("message", "")
     document_id = data.get("document_id", "")
     print(document_id)
+    
+    
+    current_user_id = get_jwt_identity()
+    user = Users.query.filter_by(id=current_user_id).first()
+    
+    if not user:
+        return {"Error":"User not found."}
+    
+    if user.daily_tokens_used >= user.daily_token_limit:
+        return {"Error":"Out of Token's for today."}, 429
     
     summary = redis_client.get(f"doc:{document_id}")
     
@@ -108,7 +119,8 @@ Use phrases like these rarely when they fit:
         full_response = ""
 
         with OpenRouter(api_key=API_KEY) as client:
-
+            total_tokens = 0
+            
             stream = client.chat.send(
                 model="openai/gpt-oss-120b:free",
                 messages=messages,
@@ -119,7 +131,11 @@ Use phrases like these rarely when they fit:
             for event in stream:
                 if not event.choices:
                     continue
-
+                
+                if hasattr(event, "usage") and event.usage:
+                    print("TOTAL:", event.usage.total_tokens)
+                    total_tokens += event.usage.total_tokens
+                
                 delta = event.choices[0].delta
                 if hasattr(delta, "content") and delta.content:
                     # save streamed text
@@ -137,6 +153,13 @@ Use phrases like these rarely when they fit:
         if len(chat_history) > 20:
             del chat_history[:-20]
 
+        user = Users.query.filter_by(id=current_user_id).first()
+        print("FROM CHAT USAGE", total_tokens)
+        
+        if user:
+            user.daily_tokens_used += total_tokens
+            db.session.commit()
+    
     return Response(
         stream_with_context(generate()),
         mimetype="text/plain",
@@ -150,6 +173,15 @@ Use phrases like these rarely when they fit:
 @app.route("/summarize", methods=["POST"])
 @jwt_required()
 def summarize():
+    
+    current_user_id = get_jwt_identity()
+    user = Users.query.filter_by(id=current_user_id).first()
+    
+    if not user:
+        return {"Error":"User not found."}
+    
+    if user.daily_tokens_used >= user.daily_token_limit:
+        return {"Error":"Out of Token's for today."}, 429
 
     data = request.json
     text = data.get("text", "")
@@ -165,7 +197,8 @@ def summarize():
         full_summary = ""
         
         with OpenRouter(api_key=API_KEY) as client:
-
+            total_tokens = 0
+            
             stream = client.chat.send(
                 model="openai/gpt-oss-120b:free",
                 messages=[
@@ -227,9 +260,12 @@ $$
                 stream=True,
                 max_tokens=1024
             )
-
             for event in stream:
 
+                if hasattr(event, "usage") and event.usage:
+                    print("TOTAL:", event.usage.total_tokens)
+                    total_tokens += event.usage.total_tokens
+                
                 if not event.choices:
                     continue
 
@@ -243,6 +279,13 @@ $$
                     
                     # send chunk to frontend
                     yield chunk
+
+        user = Users.query.filter_by(id=current_user_id).first()
+        print("OUTSIDEEEEEEE", total_tokens)
+        
+        if user:
+            user.daily_tokens_used += total_tokens
+            db.session.commit()
 
         redis_client.setex(
                 f"doc:{document_id}",
