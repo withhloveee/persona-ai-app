@@ -1,3 +1,17 @@
+/* for code in .md */
+
+/* .markdown-body pre {
+  background-color: #0d1117;
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.markdown-body code {
+  font-family: monospace;
+} */
+
+
 .chat-scroll {
   overflow-y: auto;
 }

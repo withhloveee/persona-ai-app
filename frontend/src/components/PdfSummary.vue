@@ -16,6 +16,7 @@
       <!-- REAL CONTENT -->
       <div
         v-if="markdown"
+        class="markdown-body p-4 rounded"
         v-html="parsedMarkdown"
       ></div>
 
@@ -116,14 +117,45 @@ import "katex/dist/katex.min.css"
 import { useSummaryStore } from "@/stores/chat"
 import { storeToRefs } from "pinia"
 
+// code highlight imports
+import { markedHighlight } from "marked-highlight"
+import hljs from "highlight.js"
+import "highlight.js/styles/github.css"
+
+
 marked.use(markedKatex())
+marked.use({
+  renderer: {
+    code({ text, lang }) {
+
+      const language =
+        hljs.getLanguage(lang) ? lang : 'plaintext'
+
+      const highlighted = hljs.highlight(text, {
+        language
+      }).value
+
+      return `
+        <pre>
+          <code class="hljs language-${language}">
+            ${highlighted}
+          </code>
+        </pre>
+      `
+    }
+  }
+})
+
+
 const chatStore = useSummaryStore()
 
 const { markdown } = storeToRefs(chatStore)
 
 
 const parsedMarkdown = computed(() => {
-    return marked(markdown.value)
+    return marked.parse(markdown.value)
 })
-console.log(markdown.value)
+// console.log(markdown.value)
+console.log(marked.parse(markdown.value))
 </script>
+

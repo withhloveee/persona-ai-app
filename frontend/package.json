@@ -13,8 +13,11 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "github-markdown-css": "^5.9.0",
+    "highlight.js": "^11.11.1",
     "katex": "^0.16.47",
     "marked": "^18.0.3",
+    "marked-highlight": "^2.2.4",
     "marked-katex-extension": "^5.1.8",
     "mathjax": "^4.1.2",
     "pdfjs-dist": "^5.7.284",

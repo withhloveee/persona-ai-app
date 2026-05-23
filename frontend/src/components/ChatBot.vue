@@ -35,8 +35,9 @@
           class="d-flex justify-content-start"
         >
           <div
-            class="bg-light p-2 rounded border markdown-body"
-            v-html="message.rendered || marked(message.content)"
+            class="markdown-body rounded"
+            v-html="message.rendered"
+            style="padding: 12px;"
           ></div>
         </div>
 
@@ -81,7 +82,28 @@ import { fetchAIResponse } from '@/composables/fetchAIResponse'
 import markedKatex from "marked-katex-extension"
 import "katex/dist/katex.min.css"
 
+// code highlight imports
+import { markedHighlight } from "marked-highlight"
+import hljs from "highlight.js"
+import "highlight.js/styles/github.css"
+
 marked.use(markedKatex())
+marked.use({
+  renderer: {
+    code({ text, lang }) {
+
+      const language =
+        hljs.getLanguage(lang) ? lang : 'plaintext'
+
+      const highlighted = hljs.highlight(text, {
+        language
+      }).value
+
+      return `<pre><code class="hljs language-${language}">${highlighted}</code></pre>`
+    }
+  }
+})
+
 const summaryStore = useSummaryStore()
 
 const userInput = ref('')
@@ -112,6 +134,7 @@ async function sendMessage() {
   // streaming updates
   await fetchAIResponse(question, (chunk) => {
     aiMessage.value.content += chunk
+    aiMessage.value.rendered = marked.parse(aiMessage.value.content)
   })
 
   aiMessage.value.rendered = marked(aiMessage.value.content)
@@ -135,6 +158,8 @@ watch(
       "Say hello and ask user for doubts about the notes.",
       (chunk) => {
         aiMessage.value.content += chunk
+        // maybe below one is not needed {check LATER}
+        aiMessage.value.rendered = marked.parse(aiMessage.value.content)
       },
       documentId
     )
@@ -142,5 +167,10 @@ watch(
   }
 )
 
+</script>
 
-</script>   
+<style scoped>
+/* .markdown-body{
+  color: black !important;
+} */
+</style>
