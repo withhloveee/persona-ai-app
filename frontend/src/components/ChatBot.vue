@@ -35,6 +35,17 @@
           class="d-flex justify-content-start"
         >
           <div
+            v-if="message.loading"
+            class="typing-loader"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+          <!-- REAL MESSAGE -->
+          <div
+            v-else
             class="markdown-body rounded"
             v-html="message.rendered"
             style="padding: 12px;"
@@ -110,6 +121,17 @@ const summaryStore = useSummaryStore()
 const userInput = ref('')
 const messages = ref([])
 
+
+function createAIMessage() {
+  return ref({
+    role: 'assistant',
+    content: '',
+    rendered: '',
+    loading: true
+  })
+}
+
+
 async function sendMessage() {
 
   if (!userInput.value.trim()) return
@@ -124,19 +146,19 @@ async function sendMessage() {
   userInput.value = ''
 
   // plain object
-  const aiMessage = ref({
-    role: 'assistant',
-    content: '',
-    rendered: ''
-})
+  const aiMessage = createAIMessage()
 
   messages.value.push(aiMessage.value)
 
   // streaming updates
   await fetchAIResponse(question, (chunk) => {
+    // loading state ends
+    aiMessage.value.loading = false
+
     aiMessage.value.content += chunk
     let rawHTML =  marked.parse(aiMessage.value.content)
     let cleanHTML = DOMPurify.sanitize(rawHTML)
+
     aiMessage.value.rendered = cleanHTML
   })
 
@@ -150,19 +172,20 @@ watch(
     if (!ready) return
 
     const documentId = sessionStorage.getItem("document_id")
-    const aiMessage = ref({
-      role: 'assistant',
-      content: ''
-    })
+    const aiMessage = createAIMessage()
 
     messages.value.push(aiMessage.value)
 
     await fetchAIResponse(
       "Say hello and ask user for doubts about the notes.",
       (chunk) => {
+        // loading state ends
+        aiMessage.value.loading = false
+
         aiMessage.value.content += chunk
         let rawHTML =  marked.parse(aiMessage.value.content)
         let cleanHTML = DOMPurify.sanitize(rawHTML)
+
         aiMessage.value.rendered = cleanHTML
       },
       documentId
@@ -174,7 +197,39 @@ watch(
 </script>
 
 <style scoped>
-/* .markdown-body{
-  color: black !important;
-} */
+/* Styles for the loading effect (AI made) */
+.typing-loader {
+  display: flex;
+  gap: 6px;
+  padding: 12px;
+}
+
+.typing-loader span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #6c757d;
+
+  animation: wave 1.2s infinite ease-in-out;
+}
+
+.typing-loader span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-loader span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes wave {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+
+  30% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
 </style>
