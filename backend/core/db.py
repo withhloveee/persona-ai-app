@@ -6,7 +6,7 @@ class Users(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     username = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
-    daily_token_limit = db.Column(db.Integer, nullable=False, default=2000)
+    daily_token_limit = db.Column(db.Integer, nullable=False, default=10000)
     daily_tokens_used = db.Column(db.Integer, nullable=False, default=0)
     
 with app.app_context():

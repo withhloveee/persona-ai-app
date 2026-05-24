@@ -81,6 +81,7 @@ import { useSummaryStore } from '@/stores/chat'
 import { fetchAIResponse } from '@/composables/fetchAIResponse'
 import markedKatex from "marked-katex-extension"
 import "katex/dist/katex.min.css"
+import DOMPurify from "dompurify"
 
 // code highlight imports
 import { markedHighlight } from "marked-highlight"
@@ -134,10 +135,12 @@ async function sendMessage() {
   // streaming updates
   await fetchAIResponse(question, (chunk) => {
     aiMessage.value.content += chunk
-    aiMessage.value.rendered = marked.parse(aiMessage.value.content)
+    let rawHTML =  marked.parse(aiMessage.value.content)
+    let cleanHTML = DOMPurify.sanitize(rawHTML)
+    aiMessage.value.rendered = cleanHTML
   })
 
-  aiMessage.value.rendered = marked(aiMessage.value.content)
+  // aiMessage.value.rendered = marked(aiMessage.value.content) // feels redundant
 }
 
 watch(
@@ -158,8 +161,9 @@ watch(
       "Say hello and ask user for doubts about the notes.",
       (chunk) => {
         aiMessage.value.content += chunk
-        // maybe below one is not needed {check LATER}
-        aiMessage.value.rendered = marked.parse(aiMessage.value.content)
+        let rawHTML =  marked.parse(aiMessage.value.content)
+        let cleanHTML = DOMPurify.sanitize(rawHTML)
+        aiMessage.value.rendered = cleanHTML
       },
       documentId
     )

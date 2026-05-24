@@ -113,6 +113,7 @@ import { computed } from "vue"
 import { marked } from "marked"
 import markedKatex from "marked-katex-extension"
 import "katex/dist/katex.min.css"
+import DOMPurify from "dompurify"
 
 import { useSummaryStore } from "@/stores/chat"
 import { storeToRefs } from "pinia"
@@ -153,8 +154,11 @@ const { markdown } = storeToRefs(chatStore)
 
 
 const parsedMarkdown = computed(() => {
-    return marked.parse(markdown.value)
+    let rawHTML =  marked.parse(markdown.value)
+    let cleanHTML = DOMPurify.sanitize(rawHTML)
+    return cleanHTML
 })
+
 // console.log(markdown.value)
 console.log(marked.parse(markdown.value))
 </script>
