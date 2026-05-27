@@ -6,6 +6,7 @@ import redis
 import uuid
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from core.db import Users
+import json
 
 from main import app,db
 
@@ -19,20 +20,22 @@ redis_client = redis.Redis.from_url(
     decode_responses=True
 )
 
-# TEMP MEMORY: {shared for all users}
-chat_history = []
-
 @app.route("/chat", methods=["POST"])
 @jwt_required()
 def result():
     data = request.json
     user_msg = data.get("message", "")
     document_id = data.get("document_id", "")
+
     print(document_id)
-    
     
     current_user_id = get_jwt_identity()
     user = Users.query.filter_by(id=current_user_id).first()
+    
+    redis_key = f"chat:{current_user_id}:{document_id}"
+    
+    print("DOC ID:", document_id)
+    print("REDIS KEY:", redis_key)
     
     if not user:
         return {"Error":"User not found."}
@@ -42,24 +45,53 @@ def result():
     
     summary = redis_client.get(f"doc:{document_id}")
     
-    # save user message
-    chat_history.append({
+    # fetch previous chat history
+    stored_messages = redis_client.lrange(redis_key, -20, -1)
+    is_first_message = (len(stored_messages) == 0)
+    
+    chat_history = [
+        json.loads(msg)
+        for msg in stored_messages
+    ]
+
+    # current user message
+    current_user_message = {
         "role": "user",
         "content": user_msg
-    })
+    }
+
+    # save user message to redis
+    redis_client.rpush(
+        redis_key,
+        json.dumps(current_user_message)
+    )
+
+    # expiry timer (10 mins)
+    redis_client.expire(redis_key, 600)
 
     def generate():
 
-        note_context = (
-    f"""
-NOTE:
-The note is only given to you once so REMEMBER this in your memory exactly as it is.
+        # first message => inject note into memory once
+        if is_first_message and summary:
 
-This is the note user is studying right now,
-{summary}
-"""
-    if summary else ""
-)
+            note_message = {
+                "role": "system",
+                "content": f"""
+        The user is currently studying the following note.
+
+        {summary}
+        """
+            }
+
+            redis_client.rpush(
+                redis_key,
+                json.dumps(note_message)
+            )
+
+            # refetch updated history
+            stored_messages.append(
+                json.dumps(note_message)
+            )
         
         system_prompt = f"""
 You are Mahiru Shina from the anime "Angel next door" helping a user in doubts from a note.
@@ -95,8 +127,6 @@ $$
 \\int \\frac{{1}}{{x}}\\,dx = \\ln |x| + C
 $$50
 
-{note_context}
-
 Your job is to reply casually like social media chats.
 
 Use phrases like these rarely when they fit:
@@ -113,7 +143,8 @@ Use phrases like these rarely when they fit:
                 "role": "system",
                 "content": system_prompt
             },
-            *chat_history
+            *chat_history,
+            current_user_message # since, current_user_message is seperated out.
         ]
 
         full_response = ""
@@ -143,15 +174,23 @@ Use phrases like these rarely when they fit:
                     # send to frontend
                     yield delta.content
 
-        # save assistant response AFTER streaming ends
-        chat_history.append({
+        # AFTER streaming ends:
+        # save assistant response to redis
+        assistant_message = {
             "role": "assistant",
             "content": full_response
-        })
+        }
 
-        #keep only recent chats
-        if len(chat_history) > 20:
-            del chat_history[:-20]
+        redis_client.rpush(
+            redis_key,
+            json.dumps(assistant_message)
+        )
+
+        # keep only latest 20 messages
+        redis_client.ltrim(redis_key, -20, -1)
+
+        # refresh expiry again
+        redis_client.expire(redis_key, 600)
 
         user = Users.query.filter_by(id=current_user_id).first()
         print("FROM CHAT USAGE", total_tokens)

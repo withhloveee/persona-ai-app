@@ -133,7 +133,8 @@ function createAIMessage() {
 
 
 async function sendMessage() {
-
+  const documentId = sessionStorage.getItem("document_id")
+  console.log("SEND MESSAGE CALLED")
   if (!userInput.value.trim()) return
 
   messages.value.push({
@@ -150,6 +151,8 @@ async function sendMessage() {
 
   messages.value.push(aiMessage.value)
 
+
+  console.log("Inside sendMessage:",documentId)
   // streaming updates
   await fetchAIResponse(question, (chunk) => {
     // loading state ends
@@ -160,7 +163,7 @@ async function sendMessage() {
     let cleanHTML = DOMPurify.sanitize(rawHTML)
 
     aiMessage.value.rendered = cleanHTML
-  })
+  },documentId)
 
   // aiMessage.value.rendered = marked(aiMessage.value.content) // feels redundant
 }
