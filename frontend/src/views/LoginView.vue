@@ -1,70 +1,76 @@
 <template>
-  <div class="container vh-100 d-flex justify-content-center align-items-center">
+  <div class="page-wrapper">
 
-    <div class="card shadow-sm login-card" style="width: 27rem;">
+    <Appheader :nav-items="navItems"/>
 
-      <div class="card-body p-4">
+    <div class="self-container flex-grow-1 d-flex justify-content-center align-items-center">
 
-        <h3 class="text-center mb-4 fw-bold">
-          User Login
-        </h3>
+      <div class="card shadow-sm login-card">
 
-        <form @submit.prevent="loginUser">
+        <div class="card-body p-4">
 
-          <div class="mb-3">
-            <label class="form-label">
-              Username
-            </label>
+          <h3 class="text-center mb-4 fw-bold">
+            User Login
+          </h3>
 
-            <input
-              v-model="username"
-              type="text"
-              class="form-control"
-              placeholder="Choose a username"
-              required
+          <form @submit.prevent="loginUser">
+
+            <div class="mb-3">
+              <label class="form-label">
+                Username
+              </label>
+
+              <input
+                v-model="username"
+                type="text"
+                class="form-control"
+                placeholder="Choose a username"
+                required
+              >
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">
+                Password
+              </label>
+
+              <input
+                v-model="password"
+                type="password"
+                class="form-control"
+                placeholder="Enter password"
+                required
+              >
+            </div>
+
+            <button
+              type="submit"
+              class="btn btn-primary w-100 mt-2"
             >
-          </div>
+              Login
+            </button>
 
-          <div class="mb-3">
-            <label class="form-label">
-              Password
-            </label>
+          </form>
 
-            <input
-              v-model="password"
-              type="password"
-              class="form-control"
-              placeholder="Enter password"
-              required
-            >
-          </div>
-
-          <button
-            type="submit"
-            class="btn btn-primary w-100 mt-2"
+          <div
+            v-if="error"
+            class="alert alert-danger mt-3 mb-0 text-center"
           >
-            Login
-          </button>
+            {{ error }}
+          </div>
 
-        </form>
+          <p class="text-center mt-4 mb-2">
+            Don't have an account yet?
+          </p>
 
-        <div
-          v-if="error"
-          class="alert alert-danger mt-3 mb-0 text-center"
-        >
-          {{ error }}
+          <RouterLink
+            to="/register"
+            class="btn btn-outline-primary w-100"
+          >
+            Register
+          </RouterLink>
+
         </div>
-
-        <p class="text-center mt-4 mb-2">
-          Dont have an account yet?
-        </p>
-
-        <RouterLink
-          to="/register"
-          class="btn btn-outline-primary w-100"
-        >
-          Register
-        </RouterLink>
 
       </div>
 
@@ -76,6 +82,8 @@
 <script setup>
 import { ref } from "vue"
 import router from "@/router"
+
+import Appheader from "@/components/Appheader.vue"
 
 const username = ref("")
 const password = ref("")
@@ -112,9 +120,38 @@ async function loginUser() {
     router.push("upload")
 
 }
+
+// for navbar:
+const navItems = [
+  {
+    label: "Home",
+    active: false,
+    action: () => router.push("/")
+  },
+  {
+    label: "About",
+    active: false,
+  }
+]
 </script>
 
 <style scoped>
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.self-container {
+  flex: 1;
+  background-color: #f6f8fe;
+  background-image: radial-gradient(
+    rgba(37, 99, 235, 0.08) 0.6px,
+    transparent 3px
+  );
+  background-size: 30px 30px;
+}
+
 .login-card {
   width: 100%;
   max-width: 425px;

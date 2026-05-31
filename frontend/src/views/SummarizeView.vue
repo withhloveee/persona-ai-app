@@ -1,5 +1,11 @@
 <template>
-  <Splitpanes class="default-theme vh-100">
+  <div>
+    <Appheader :nav-items="navItems" :sticky="false"/>
+    <Splitpanes 
+    class="default-theme content-area" 
+    style="height: calc(100vh - 65px)"
+    :nav-items="navItems"
+    >
 
     <Pane size="70">
       <PdfSummary />
@@ -10,6 +16,7 @@
     </Pane>
 
   </Splitpanes>
+  </div>
 </template>
 
 <script setup>
@@ -17,5 +24,23 @@ import ChatBot from '@/components/ChatBot.vue';
 import PdfSummary from '@/components/PdfSummary.vue';
 import { Splitpanes, Pane } from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
+import Appheader from '@/components/Appheader.vue';
+import { useRouter } from 'vue-router'
 
+
+const router = useRouter()
+
+// for navbar:
+const navItems = [
+  {
+    label: "Home",
+    active: false,
+    action: () => router.push("/")
+  },
+  {
+    label: "About",
+    active: false,
+  }
+]
 </script>
+

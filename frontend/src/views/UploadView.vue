@@ -1,35 +1,58 @@
 <template>
-  <div class="d-flex justify-content-center align-items-center vh-100">
+  <div class="page-wrapper">
 
-    <label
-      for="pdfInput"
-      class="border border-secondary-subtle rounded-4 px-5 py-5 bg-light
-             d-flex flex-column align-items-center
-             shadow-sm upload-box"
-    >
-      <span class="fs-1 mb-3">📄</span>
+    <Appheader :nav-items="navItems" />
 
-      <span class="fs-4 fw-semibold">
-        Upload PDF
-      </span>
+    <div class="self-container d-flex justify-content-center align-items-center">
 
-      <span class="text-muted mt-1">
-        Click to select a file
-      </span>
-    </label>
+      <label
+        for="pdfInput"
+        class="border border-secondary-subtle rounded-4 px-5 py-5 bg-light
+               d-flex flex-column align-items-center
+               shadow-sm upload-box"
+      >
+        <span class="fs-1 mb-3">📄</span>
 
-    <input
-      id="pdfInput"
-      type="file"
-      accept=".pdf"
-      class="d-none"
-      @change="handlePDF"
-    >
+        <span class="fs-4 fw-semibold">
+          Upload PDF
+        </span>
+
+        <span class="text-muted mt-1">
+          Click to select a file
+        </span>
+      </label>
+
+      <input
+        id="pdfInput"
+        type="file"
+        accept=".pdf"
+        class="d-none"
+        @change="handlePDF"
+      >
+
+    </div>
 
   </div>
 </template>
 
 <style scoped>
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.self-container {
+  flex: 1;
+
+  background-color: #f6f8fe;
+  background-image: radial-gradient(
+    rgba(37, 99, 235, 0.08) 0.6px,
+    transparent 3px
+  );
+  background-size: 30px 30px;
+}
+
 .upload-box {
   min-width: 320px;
   min-height: 220px;
@@ -38,7 +61,7 @@
 }
 
 .upload-box:hover {
-  transform: scale(1.02);
+  transform: translateY(-2px);
 }
 </style>
 
@@ -47,7 +70,7 @@ import { useRouter } from 'vue-router'
 import { extractPDFText } from '@/composables/extractPDFText'
 import { summarizeText } from '@/composables/summarizeText' 
 import { useSummaryStore } from "@/stores/chat"
-
+import Appheader from '@/components/Appheader.vue'
 
 const router = useRouter()
 const chatStore = useSummaryStore()
@@ -68,4 +91,18 @@ async function handlePDF(event) {
     
 
 }
+
+
+// for navbar:
+const navItems = [
+  {
+    label: "Home",
+    active: false,
+    action: () => router.push("/")
+  },
+  {
+    label: "About",
+    active: false,
+  }
+]
 </script>
