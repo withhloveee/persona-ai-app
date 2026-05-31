@@ -82,12 +82,15 @@
 <script setup>
 import { ref } from "vue"
 import router from "@/router"
+import { useAuthStore } from "@/stores/chat"
 
 import Appheader from "@/components/Appheader.vue"
 
 const username = ref("")
 const password = ref("")
 const error = ref("")
+
+const authStore = useAuthStore()
 
 async function loginUser() {
     error.value = ""
@@ -115,6 +118,7 @@ async function loginUser() {
       "token",
       data.token
     )
+    authStore.isLoggedIn = true
 
     console.log("Logged in!")
     router.push("upload")
@@ -125,11 +129,12 @@ async function loginUser() {
 const navItems = [
   {
     label: "Home",
-    active: false,
+    icon: "house-door",
     action: () => router.push("/")
   },
   {
     label: "About",
+    icon: "info-circle",
     active: false,
   }
 ]

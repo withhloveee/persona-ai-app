@@ -97,11 +97,12 @@ async function handlePDF(event) {
 const navItems = [
   {
     label: "Home",
-    active: false,
+    icon: "house-door",
     action: () => router.push("/")
   },
   {
     label: "About",
+    icon: "info-circle",
     active: false,
   }
 ]

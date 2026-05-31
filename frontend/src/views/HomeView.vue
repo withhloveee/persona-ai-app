@@ -23,9 +23,14 @@
 
             <div class="d-flex gap-3 justify-content-center align-items-center flex-wrap mt-4">
               
-              <RouterLink to="/register" class="btn btn-primary px-4 py-2-5 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
+              <RouterLink v-if="authStore.isLoggedIn" to="/upload" class="btn btn-primary px-4 py-2-5 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
+                Upload PDF <span>→</span>
+              </RouterLink>
+
+              <RouterLink v-else to="/register" class="btn btn-primary px-4 py-2-5 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
                 Get Started <span>→</span>
               </RouterLink>
+
 
               <RouterLink to="/login" class="btn btn-outline-custom px-4 py-2-5 fw-medium d-inline-flex align-items-center gap-2">
                 Login to Account
@@ -107,18 +112,27 @@
 
 <script setup>
 import { RouterLink } from 'vue-router'
+import { ref } from 'vue'
 import Appheader from '@/components/Appheader.vue'
+import { useAuthStore } from '@/stores/chat';
+
+const authStore = useAuthStore()
 
 const navItems = [
   {
     label: "Home",
+    icon: "house-door",
     active: true,
   },
   {
     label: "About",
+    icon: "info-circle",
     active: false,
   }
 ]
+
+const isLoggedIn = ref(!!localStorage.getItem("token"))
+
 </script>
 
 <style scoped>

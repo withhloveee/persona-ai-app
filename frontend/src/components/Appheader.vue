@@ -16,14 +16,29 @@
         <!-- RIGHT -->
         <nav class="d-flex align-items-center gap-5">
 
+        <button
+          v-for="item in navItems"
+          :key="item.label"
+          class="nav-btn"
+          :class="{ active: item.active }"
+          @click="item.action"
+        >
+          <i
+            v-if="item.icon"
+            :class="`bi bi-${item.icon}`"
+            class="me-2"
+          ></i>
+
+          {{ item.label }}
+        </button>
+
           <button
-            v-for="item in navItems"
-            :key="item.label"
+            v-if="authStore.isLoggedIn"
             class="nav-btn"
-            :class="{ active: item.active }"
-            @click="item.action"
+            @click="logout"
           >
-            {{ item.label }}
+            <i class="bi bi-box-arrow-right me-2"></i>
+            Logout
           </button>
 
         </nav>
@@ -37,6 +52,7 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/chat';
 
 const router = useRouter()
 
@@ -51,6 +67,19 @@ defineProps({
     default: true
   }
 })
+
+// for logout:
+const authStore = useAuthStore()
+
+function logout() {
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+
+  authStore.isLoggedIn = false
+
+  router.push('/')
+}
+
 </script>
 
 <style scoped>

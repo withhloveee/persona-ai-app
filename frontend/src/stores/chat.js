@@ -14,3 +14,9 @@ export const useSummaryStore = defineStore("summary", () => {
         summaryReady
     }
 })
+
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    isLoggedIn: !!localStorage.getItem('token')
+  })
+})
