@@ -7,11 +7,13 @@ export const useSummaryStore = defineStore("summary", () => {
     const loading = ref(false)
 
     const summaryReady = ref(false)
-
+    const messages = ref([])
+    
     return {
         markdown,
         loading,
-        summaryReady
+        summaryReady,
+        messages
     }
 })
 

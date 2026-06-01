@@ -88,6 +88,7 @@
 import { ref,watch  } from 'vue'
 import { marked } from "marked"
 import { useSummaryStore } from '@/stores/chat'
+import { storeToRefs } from "pinia"
 
 import { fetchAIResponse } from '@/composables/fetchAIResponse'
 import markedKatex from "marked-katex-extension"
@@ -119,7 +120,8 @@ marked.use({
 const summaryStore = useSummaryStore()
 
 const userInput = ref('')
-const messages = ref([])
+
+const { messages } = storeToRefs(summaryStore)
 
 
 function createAIMessage() {
