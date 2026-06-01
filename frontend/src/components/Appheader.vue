@@ -52,7 +52,8 @@
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/chat';
+import { useAuthStore,useSummaryStore  } from '@/stores/chat';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter()
 
@@ -70,12 +71,15 @@ defineProps({
 
 // for logout:
 const authStore = useAuthStore()
+const summaryStore = useSummaryStore()
+const { messages } = storeToRefs(summaryStore)
 
 function logout() {
   localStorage.removeItem('token')
   localStorage.removeItem('user')
 
   authStore.isLoggedIn = false
+  messages.value = []
 
   router.push('/')
 }
