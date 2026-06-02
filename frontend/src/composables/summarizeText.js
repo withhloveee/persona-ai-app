@@ -5,9 +5,9 @@ export async function summarizeText(text) {
     const summaryStore = useSummaryStore()
     summaryStore.summaryReady = false
     const token = localStorage.getItem("token")
+
     // reset the chat to Nothing
     summaryStore.messages = []
-
     // clear old markdown
     summaryStore.markdown = ""
 

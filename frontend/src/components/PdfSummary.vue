@@ -123,7 +123,6 @@ import { markedHighlight } from "marked-highlight"
 import hljs from "highlight.js"
 import "highlight.js/styles/github.css"
 
-
 marked.use(markedKatex())
 marked.use({
   renderer: {
@@ -147,19 +146,16 @@ marked.use({
   }
 })
 
-
 const chatStore = useSummaryStore()
-
 const { markdown } = storeToRefs(chatStore)
 
-
+// run every time {markdown.value} changes
 const parsedMarkdown = computed(() => {
     let rawHTML =  marked.parse(markdown.value)
     let cleanHTML = DOMPurify.sanitize(rawHTML)
     return cleanHTML
 })
 
-// console.log(markdown.value)
 console.log(marked.parse(markdown.value))
 </script>
 

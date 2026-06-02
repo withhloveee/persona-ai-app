@@ -41,7 +41,5 @@ export async function fetchAIResponse(input,onChunk,documentId=null) {
         console.log(error)
     }
 
-
-
     return response
 }

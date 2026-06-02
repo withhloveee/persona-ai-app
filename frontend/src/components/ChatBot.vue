@@ -118,11 +118,9 @@ marked.use({
 })
 
 const summaryStore = useSummaryStore()
-
-const userInput = ref('')
-
 const { messages } = storeToRefs(summaryStore)
 
+const userInput = ref('')
 
 function createAIMessage() {
   return ref({
@@ -132,7 +130,6 @@ function createAIMessage() {
     loading: true
   })
 }
-
 
 async function sendMessage() {
   const documentId = sessionStorage.getItem("document_id")

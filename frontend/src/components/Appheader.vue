@@ -72,7 +72,7 @@ defineProps({
 // for logout:
 const authStore = useAuthStore()
 const summaryStore = useSummaryStore()
-const { messages } = storeToRefs(summaryStore)
+const { messages,markdown } = storeToRefs(summaryStore)
 
 function logout() {
   localStorage.removeItem('token')
@@ -80,6 +80,7 @@ function logout() {
 
   authStore.isLoggedIn = false
   messages.value = []
+  markdown.value = ""
 
   router.push('/')
 }
