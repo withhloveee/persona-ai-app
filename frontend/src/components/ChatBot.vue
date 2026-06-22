@@ -119,6 +119,7 @@ marked.use({
 
 const summaryStore = useSummaryStore()
 const { messages } = storeToRefs(summaryStore)
+const { selectedCharacter } = storeToRefs(summaryStore) 
 
 const userInput = ref('')
 
@@ -190,7 +191,8 @@ watch(
 
         aiMessage.value.rendered = cleanHTML
       },
-      documentId
+      documentId,
+      selectedCharacter.value
     )
     
   }

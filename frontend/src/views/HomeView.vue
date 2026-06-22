@@ -26,7 +26,7 @@
                 Upload PDF <span class="arrow">→</span>
               </RouterLink>
               <RouterLink v-else to="/register" class="btn-primary-custom">
-                Start Learning <span class="arrow">→</span>
+                Start Learning
               </RouterLink>
             </div>
 
@@ -212,7 +212,6 @@ const isLoggedIn = ref(!!localStorage.getItem("token"))
 
 .btn-primary-custom:hover {
   background-color: #c8e44a;
-  transform: translateY(-1px);
 }
 
 .btn-primary-custom:active {

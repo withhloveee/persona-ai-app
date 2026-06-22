@@ -1,9 +1,10 @@
 import { ref } from "vue"
 
-export async function fetchAIResponse(input,onChunk,documentId=null) {
+export async function fetchAIResponse(input,onChunk,documentId=null,character=null) {
 
     const response = ref("")
     const token = localStorage.getItem("token")
+    console.log("YUM", character)
 
     try {
         const res = await fetch("http://127.0.0.1:8000/chat",{
@@ -14,7 +15,9 @@ export async function fetchAIResponse(input,onChunk,documentId=null) {
         },
         body: JSON.stringify({
             message: input,
-            document_id: documentId // if nothing is given: null is passed
+            // if nothing is given: null is passed
+            document_id: documentId, 
+            character: character
         })
     })
 

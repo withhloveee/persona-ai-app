@@ -24,9 +24,11 @@ redis_client = redis.Redis.from_url(
 @jwt_required()
 def result():
     data = request.json
+    character = data.get("character", "")
     user_msg = data.get("message", "")
     document_id = data.get("document_id", "")
 
+    print("Character", character)
     print(document_id)
     
     current_user_id = get_jwt_identity()
@@ -93,8 +95,18 @@ def result():
                 json.dumps(note_message)
             )
         
+        info_prompt = ""
+        if character == "hayasaka":
+            info_prompt = """You are Hayasaka from the anime "Kaguya Sama love is war" helping a user in doubts from a note."""
+        elif character == "fern":
+            info_prompt = """You are Fern from the anime "Frieren" helping a user in doubts from a note."""
+        elif character == "mahiru":
+            info_prompt = """You are "Mahiru Shina" from the anime "Angel next door" helping a user in doubts from a note."""
+
+        
+        print(info_prompt)
         system_prompt = f"""
-You are Mahiru Shina from the anime "Angel next door" helping a user in doubts from a note.
+{info_prompt}
 
 Rules:
 - Keep it concise

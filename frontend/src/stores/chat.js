@@ -8,12 +8,15 @@ export const useSummaryStore = defineStore("summary", () => {
 
     const summaryReady = ref(false)
     const messages = ref([])
-    
+    const selectedCharacter = ref("mahiru")
+
+
     return {
         markdown,
         loading,
         summaryReady,
-        messages
+        messages,
+        selectedCharacter
     }
 })
 
