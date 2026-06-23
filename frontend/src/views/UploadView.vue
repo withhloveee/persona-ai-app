@@ -28,7 +28,7 @@
               value="mahiru"
               v-model="selectedCharacter"
             >
-            <div class="character-emoji">🌸</div>
+            <div class="character-emoji"><img src="@/assets/mahiru.jpg" alt="" width="120px"></div>
             <div class="character-name">Mahiru</div>
           </label>
 
@@ -41,7 +41,7 @@
               value="fern"
               v-model="selectedCharacter"
             >
-            <div class="character-emoji">🪄</div>
+            <div class="character-emoji"><img src="@/assets/fern.jpg" alt="" width="120px"></div>
             <div class="character-name">Fern</div>
           </label>
 
@@ -54,7 +54,7 @@
               value="hayasaka"
               v-model="selectedCharacter"
             >
-            <div class="character-emoji">🎀</div>
+            <div class="character-emoji"><img src="@/assets/hayasaka.jpg" alt="" width="120px"></div>
             <div class="character-name">Hayasaka</div>
           </label>
 

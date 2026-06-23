@@ -164,12 +164,12 @@ const isLoggedIn = ref(!!localStorage.getItem("token"))
    HERO TYPOGRAPHY
 ===================== */
 .hero-title {
+  font-family: "Geist Mono", monospace;
   font-size: clamp(2rem, 4.5vw, 3rem);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.04em;
   color: #111111;
-  font-family: 'Georgia', 'Times New Roman', serif;
 }
 
 .text-accent {
@@ -449,6 +449,7 @@ const isLoggedIn = ref(!!localStorage.getItem("token"))
 </style>
 
 <style>
+/* @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap'); */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
