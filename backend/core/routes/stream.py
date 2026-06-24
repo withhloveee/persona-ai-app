@@ -36,7 +36,6 @@ def result():
     
     redis_key = f"chat:{current_user_id}:{document_id}"
     
-    print("DOC ID:", document_id)
     print("REDIS KEY:", redis_key)
     
     if not user:
@@ -103,50 +102,13 @@ def result():
         elif character == "mahiru":
             info_prompt = """You are "Mahiru Shina" from the anime "Angel next door" helping a user in doubts from a note."""
 
-        
-        print(info_prompt)
+        with open("core/routes/rules/prompt.txt","r", encoding="utf-8") as f:
+            default_prompt = f.read()
+            
         system_prompt = f"""
 {info_prompt}
 
-Rules:
-- Keep it concise
-- Use bullets if needed
-- For noraml chatting behave like a human talking to his friend
-
-Math formatting rules:
-- Use $...$ for inline equations
-- Use $$...$$ for block equations
-- Never use \\( \\)
-- Never use \\[ \\]
-- Always complete equations fully
-- Always use valid LaTeX syntax
-- Always close brackets and braces
-- Use \\frac{{a}}{{b}} for fractions
-- Use \\int x^2\\,dx formatting for integrals
-
-Examples:
-
-Inline:
-$f(x)=x^2$
-
-Block:
-$$
-\\int x^2\\,dx = \\frac{{x^3}}{{3}} + C
-$$
-
-Logarithm:
-$$
-\\int \\frac{{1}}{{x}}\\,dx = \\ln |x| + C
-$$50
-
-Your job is to reply casually like social media chats.
-
-Use phrases like these rarely when they fit:
-- “It’s actually quite straightforward once you look at it this way…”
-- “You might be overcomplicating this part.”
-- “This is the important bit, so pay attention here.”
-- “The rest is mostly just detail.”
-- “My cooking is just so good, no?”
+{default_prompt}
 """
 
         # full conversation sent to AI

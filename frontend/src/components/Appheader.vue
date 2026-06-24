@@ -10,7 +10,7 @@
 
         <!-- LEFT -->
         <h5 class="site-title m-0">
-          <router-link to="/" class="site-link"><h3 class="brand-logo">talk2learn</h3> </router-link>
+          <router-link to="/" class="site-link"><h3 class="brand-logo">Talk2learn</h3> </router-link>
         </h5>
 
         <!-- RIGHT -->
@@ -141,13 +141,8 @@ function logout() {
   font-size: 1.72rem;
   font-weight: 700;
 
-  color: #0d6efd;
-
-  font-family:
-    Inter,
-    SF Pro Display,
-    Segoe UI,
-    sans-serif;
+  color: black;
+  font-family: "Geist Mono", monospace;
 
   letter-spacing: -1px;
 

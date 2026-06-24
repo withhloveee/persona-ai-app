@@ -153,6 +153,7 @@ async function sendMessage() {
 
 
   console.log("Inside sendMessage:",documentId)
+  
   // streaming updates
   await fetchAIResponse(question, (chunk) => {
     // loading state ends
@@ -165,7 +166,6 @@ async function sendMessage() {
     aiMessage.value.rendered = cleanHTML
   },documentId)
 
-  // aiMessage.value.rendered = marked(aiMessage.value.content) // feels redundant
 }
 
 watch(
