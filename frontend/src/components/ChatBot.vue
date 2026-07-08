@@ -180,7 +180,7 @@ watch(
     messages.value.push(aiMessage.value)
 
     await fetchAIResponse(
-      "Say hello and ask user for doubts about the notes.",
+      "Introduce yourself as well as greet the user and ask for doubts about the notes.",
       (chunk) => {
         // loading state ends
         aiMessage.value.loading = false
