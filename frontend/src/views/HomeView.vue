@@ -129,15 +129,16 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import Appheader from '@/components/Appheader.vue'
 import { useAuthStore } from '@/stores/chat'
 
 const authStore = useAuthStore()
+const router = useRouter()
 
 const navItems = [
-  { label: 'Home', icon: 'house-door', active: true },
-  { label: 'About', icon: 'info-circle', active: false },
+  { label: 'Home', icon: 'house-door', active: true, action: () => router.push('/') },
+  { label: 'About', icon: 'info-circle', active: false, action: () => router.push('/about') },
 ]
 </script>
 

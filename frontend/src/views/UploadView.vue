@@ -132,6 +132,7 @@ const navItems = [
     label: "About",
     icon: "info-circle",
     active: false,
+    action: () => router.push("/about")
   }
 ]
 </script>
