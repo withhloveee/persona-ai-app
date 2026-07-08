@@ -29,6 +29,8 @@ def result():
     user_msg = data.get("message", "")
     document_id = data.get("document_id", "")
 
+
+    print(request.method)
     print("Character", character)
     print(document_id)
     
