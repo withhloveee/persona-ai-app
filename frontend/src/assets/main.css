@@ -1,4 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap');
+
+:root {
+  --app-primary: #2454d6;
+  --app-primary-dark: #173b9b;
+  --app-accent: #b9d84a;
+  --app-ink: #14213d;
+  --app-muted: #647084;
+  --app-surface: #f7f8fb;
+  --app-border: #dfe4ee;
+  --app-heading-font: "Outfit", sans-serif;
+  --app-body-font: "Inter", sans-serif;
+}
+
+body {
+  color: var(--app-ink);
+  font-family: var(--app-body-font);
+  background: var(--app-surface);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.btn {
+  font-family: var(--app-heading-font);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--app-primary);
+  --bs-btn-border-color: var(--app-primary);
+  --bs-btn-hover-bg: var(--app-primary-dark);
+  --bs-btn-hover-border-color: var(--app-primary-dark);
+  --bs-btn-active-bg: var(--app-primary-dark);
+  --bs-btn-active-border-color: var(--app-primary-dark);
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--app-primary);
+  --bs-btn-border-color: var(--app-primary);
+  --bs-btn-hover-bg: var(--app-primary);
+  --bs-btn-hover-border-color: var(--app-primary);
+  --bs-btn-active-bg: var(--app-primary-dark);
+  --bs-btn-active-border-color: var(--app-primary-dark);
+}
+
+.text-primary {
+  color: var(--app-primary) !important;
+}
+
+.bg-primary-subtle {
+  background-color: rgba(36, 84, 214, 0.12) !important;
+}
 
 /* for code in .md */
 

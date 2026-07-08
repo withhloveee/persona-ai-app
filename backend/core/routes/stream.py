@@ -7,6 +7,7 @@ import uuid
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from core.db import Users
 import json
+from openrouter.errors import TooManyRequestsResponseError
 
 from main import app,db
 
@@ -125,28 +126,31 @@ def result():
 
         with OpenRouter(api_key=API_KEY) as client:
             total_tokens = 0
-            
-            stream = client.chat.send(
-                model="openai/gpt-oss-120b:free",
-                messages=messages,
-                stream=True,
-                max_tokens=1024
-            )
 
-            for event in stream:
-                if not event.choices:
-                    continue
-                
-                if hasattr(event, "usage") and event.usage:
-                    print("TOTAL:", event.usage.total_tokens)
-                    total_tokens += event.usage.total_tokens
-                
-                delta = event.choices[0].delta
-                if hasattr(delta, "content") and delta.content:
-                    # save streamed text
-                    full_response += delta.content
-                    # send to frontend
-                    yield delta.content
+            try:
+                stream = client.chat.send(
+                    model="openrouter/free",
+                    messages=messages,
+                    stream=True,
+                    max_tokens=1024
+                )
+
+                for event in stream:
+                    if not event.choices:
+                        continue
+
+                    if hasattr(event, "usage") and event.usage:
+                        print("TOTAL:", event.usage.total_tokens)
+                        total_tokens += event.usage.total_tokens
+
+                    delta = event.choices[0].delta
+                    if hasattr(delta, "content") and delta.content:
+                        full_response += delta.content
+                        yield delta.content
+
+            except TooManyRequestsResponseError:
+                yield "\n\n⚠️ The AI provider is currently rate limited. Please try again in a few moments."
+                return
 
         # AFTER streaming ends:
         # save assistant response to redis
@@ -213,7 +217,7 @@ def summarize():
             total_tokens = 0
             
             stream = client.chat.send(
-                model="openai/gpt-oss-120b:free",
+                model="openrouter/free",
                 messages=[
                     {
                         "role": "system",

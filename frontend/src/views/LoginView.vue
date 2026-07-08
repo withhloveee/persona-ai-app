@@ -1,81 +1,95 @@
 <template>
   <div class="page-wrapper">
+    <Appheader :nav-items="navItems" />
 
-    <Appheader :nav-items="navItems"/>
+    <main class="auth-section flex-grow-1 d-flex align-items-center">
+      <div class="container py-5">
+        <div class="row justify-content-center">
+          <div class="col-sm-10 col-md-7 col-lg-5 col-xl-4">
+            <div class="card auth-card border-0 shadow-sm">
+              <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                  <span class="auth-icon bg-primary-subtle text-primary mb-3">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                  </span>
+                  <h1 class="h3 fw-bold mb-2">
+                    Welcome back
+                  </h1>
+                  <p class="text-secondary mb-0">
+                    Sign in to continue learning.
+                  </p>
+                </div>
 
-    <div class="self-container flex-grow-1 d-flex justify-content-center align-items-center">
+                <form @submit.prevent="loginUser">
+                  <div class="mb-3">
+                    <label
+                      for="username"
+                      class="form-label fw-semibold"
+                    >
+                      Username
+                    </label>
+                    <input
+                      id="username"
+                      v-model="username"
+                      type="text"
+                      class="form-control form-control-lg"
+                      placeholder="Enter your username"
+                      autocomplete="username"
+                      required
+                    >
+                  </div>
 
-      <div class="card shadow-sm login-card">
+                  <div class="mb-4">
+                    <label
+                      for="password"
+                      class="form-label fw-semibold"
+                    >
+                      Password
+                    </label>
+                    <input
+                      id="password"
+                      v-model="password"
+                      type="password"
+                      class="form-control form-control-lg"
+                      placeholder="Enter your password"
+                      autocomplete="current-password"
+                      required
+                    >
+                  </div>
 
-        <div class="card-body p-4">
+                  <div
+                    v-if="error"
+                    class="alert alert-danger mb-4"
+                    role="alert"
+                  >
+                    {{ error }}
+                  </div>
 
-          <h3 class="text-center mb-4 fw-bold">
-            User Login
-          </h3>
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-lg w-100"
+                  >
+                    Login
+                  </button>
+                </form>
 
-          <form @submit.prevent="loginUser">
-
-            <div class="mb-3">
-              <label class="form-label">
-                Username
-              </label>
-
-              <input
-                v-model="username"
-                type="text"
-                class="form-control"
-                placeholder="Choose a username"
-                required
-              >
+                <div class="text-center mt-4">
+                  <p class="text-secondary mb-2">
+                    Don't have an account yet?
+                  </p>
+                  <RouterLink
+                    to="/register"
+                    class="btn btn-outline-primary w-100"
+                  >
+                    Create Account
+                  </RouterLink>
+                </div>
+              </div>
             </div>
-
-            <div class="mb-3">
-              <label class="form-label">
-                Password
-              </label>
-
-              <input
-                v-model="password"
-                type="password"
-                class="form-control"
-                placeholder="Enter password"
-                required
-              >
-            </div>
-
-            <button
-              type="submit"
-              class="btn btn-primary w-100 mt-2"
-            >
-              Login
-            </button>
-
-          </form>
-
-          <div
-            v-if="error"
-            class="alert alert-danger mt-3 mb-0 text-center"
-          >
-            {{ error }}
           </div>
-
-          <p class="text-center mt-4 mb-2">
-            Don't have an account yet?
-          </p>
-
-          <RouterLink
-            to="/register"
-            class="btn btn-outline-primary w-100"
-          >
-            Register
-          </RouterLink>
-
         </div>
-
       </div>
-
-    </div>
-
+    </main>
   </div>
 </template>
 
@@ -147,19 +161,32 @@ const navItems = [
   flex-direction: column;
 }
 
-.self-container {
-  flex: 1;
-  background-color: #f6f8fe;
-  background-image: radial-gradient(
-    rgba(37, 99, 235, 0.08) 0.6px,
-    transparent 3px
-  );
-  background-size: 30px 30px;
+.auth-section {
+  background:
+    linear-gradient(135deg, rgba(36, 84, 214, 0.08), rgba(185, 216, 74, 0.12)),
+    var(--app-surface);
 }
 
-.login-card {
-  width: 100%;
-  max-width: 425px;
-  border-radius: 16px;
+.auth-card {
+  border-radius: 1rem;
+}
+
+.auth-icon {
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  font-size: 1.35rem;
+}
+
+.form-control {
+  border-color: var(--app-border);
+}
+
+.form-control:focus {
+  border-color: var(--app-primary);
+  box-shadow: 0 0 0 0.25rem rgba(36, 84, 214, 0.14);
 }
 </style>

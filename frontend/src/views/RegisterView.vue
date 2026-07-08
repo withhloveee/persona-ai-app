@@ -1,95 +1,113 @@
 <template>
   <div class="page-wrapper">
-
     <Appheader :nav-items="navItems" />
 
-    <div class="self-container flex-grow-1 d-flex justify-content-center align-items-center">
+    <main class="auth-section flex-grow-1 d-flex align-items-center">
+      <div class="container py-5">
+        <div class="row justify-content-center">
+          <div class="col-sm-10 col-md-7 col-lg-5 col-xl-4">
+            <div class="card auth-card border-0 shadow-sm">
+              <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                  <span class="auth-icon bg-primary-subtle text-primary mb-3">
+                    <i class="bi bi-person-plus"></i>
+                  </span>
+                  <h1 class="h3 fw-bold mb-2">
+                    Create account
+                  </h1>
+                  <p class="text-secondary mb-0">
+                    Set up your profile and start learning.
+                  </p>
+                </div>
 
-      <div class="card shadow-sm register-card">
+                <form @submit.prevent="registerUser">
+                  <div class="mb-3">
+                    <label
+                      for="username"
+                      class="form-label fw-semibold"
+                    >
+                      Username
+                    </label>
+                    <input
+                      id="username"
+                      v-model="username"
+                      type="text"
+                      class="form-control form-control-lg"
+                      placeholder="Choose a username"
+                      autocomplete="username"
+                      required
+                    >
+                  </div>
 
-        <div class="card-body p-4">
+                  <div class="mb-3">
+                    <label
+                      for="password"
+                      class="form-label fw-semibold"
+                    >
+                      Password
+                    </label>
+                    <input
+                      id="password"
+                      v-model="password"
+                      type="password"
+                      class="form-control form-control-lg"
+                      placeholder="Create a password"
+                      autocomplete="new-password"
+                      required
+                    >
+                  </div>
 
-          <h3 class="text-center mb-4 fw-bold">
-            Create Account
-          </h3>
+                  <div class="mb-4">
+                    <label
+                      for="confirmPassword"
+                      class="form-label fw-semibold"
+                    >
+                      Confirm Password
+                    </label>
+                    <input
+                      id="confirmPassword"
+                      v-model="confirmPassword"
+                      type="password"
+                      class="form-control form-control-lg"
+                      placeholder="Confirm your password"
+                      autocomplete="new-password"
+                      required
+                    >
+                  </div>
 
-          <form @submit.prevent="registerUser">
+                  <div
+                    v-if="error"
+                    class="alert alert-danger mb-4"
+                    role="alert"
+                  >
+                    {{ error }}
+                  </div>
 
-            <div class="mb-3">
-              <label class="form-label">
-                Username
-              </label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-lg w-100"
+                  >
+                    Register
+                  </button>
+                </form>
 
-              <input
-                v-model="username"
-                type="text"
-                class="form-control"
-                placeholder="Choose a username"
-                required
-              >
+                <div class="text-center mt-4">
+                  <p class="text-secondary mb-2">
+                    Already have an account?
+                  </p>
+                  <RouterLink
+                    to="/login"
+                    class="btn btn-outline-primary w-100"
+                  >
+                    Login
+                  </RouterLink>
+                </div>
+              </div>
             </div>
-
-            <div class="mb-3">
-              <label class="form-label">
-                Password
-              </label>
-
-              <input
-                v-model="password"
-                type="password"
-                class="form-control"
-                placeholder="Enter password"
-                required
-              >
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label">
-                Confirm Password
-              </label>
-
-              <input
-                v-model="confirmPassword"
-                type="password"
-                class="form-control"
-                placeholder="Confirm password"
-                required
-              >
-            </div>
-
-            <button
-              type="submit"
-              class="btn btn-primary w-100 mt-2"
-            >
-              Register
-            </button>
-
-          </form>
-
-          <div
-            v-if="error"
-            class="alert alert-danger mt-3 mb-0 text-center"
-          >
-            {{ error }}
           </div>
-
-          <p class="text-center mt-4 mb-2">
-            Already have an account?
-          </p>
-
-          <RouterLink
-            to="/login"
-            class="btn btn-outline-primary w-100"
-          >
-            Login
-          </RouterLink>
-
         </div>
-
       </div>
-
-    </div>
-
+    </main>
   </div>
 </template>
 
@@ -149,19 +167,32 @@ const navItems = [
   flex-direction: column;
 }
 
-.self-container {
-  flex: 1;
-  background-color: #f6f8fe;
-  background-image: radial-gradient(
-    rgba(37, 99, 235, 0.08) 0.6px,
-    transparent 3px
-  );
-  background-size: 30px 30px;
+.auth-section {
+  background:
+    linear-gradient(135deg, rgba(36, 84, 214, 0.08), rgba(185, 216, 74, 0.12)),
+    var(--app-surface);
 }
 
-.register-card {
-  width: 100%;
-  max-width: 450px;
-  border-radius: 16px;
+.auth-card {
+  border-radius: 1rem;
+}
+
+.auth-icon {
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  font-size: 1.35rem;
+}
+
+.form-control {
+  border-color: var(--app-border);
+}
+
+.form-control:focus {
+  border-color: var(--app-primary);
+  box-shadow: 0 0 0 0.25rem rgba(36, 84, 214, 0.14);
 }
 </style>
