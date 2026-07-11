@@ -10,7 +10,11 @@ load_dotenv()
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite3'
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
-app.secret_key = os.getenv("SECRECT_KEY")
+app.secret_key = os.getenv("SECRET_KEY") or os.getenv("SECRECT_KEY") or os.getenv("JWT_SECRET_KEY")
+app.config["GOOGLE_CLIENT_ID"] = os.getenv("GOOGLE_CLIENT_ID")
+app.config["GOOGLE_CLIENT_SECRET"] = os.getenv("GOOGLE_CLIENT_SECRET")
+app.config["FRONTEND_URL"] = os.getenv("FRONTEND_URL", "http://localhost:5173")
+
 CORS(app, expose_headers=["X-Document-ID"])
 db = SQLAlchemy(app)
 jwt = JWTManager(app)

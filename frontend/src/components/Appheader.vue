@@ -80,10 +80,7 @@ const summaryStore = useSummaryStore()
 const { messages,markdown } = storeToRefs(summaryStore)
 
 function logout() {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
-
-  authStore.isLoggedIn = false
+  authStore.logout()
   messages.value = []
   markdown.value = ""
 

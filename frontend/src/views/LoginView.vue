@@ -10,80 +10,27 @@
               <div class="card-body p-4 p-md-5">
                 <div class="text-center mb-4">
                   <span class="auth-icon bg-primary-subtle text-primary mb-3">
-                    <i class="bi bi-box-arrow-in-right"></i>
+                    <i class="bi bi-google"></i>
                   </span>
+
                   <h1 class="h3 fw-bold mb-2">
-                    Welcome back
+                    Continue with Google
                   </h1>
+
                   <p class="text-secondary mb-0">
-                    Sign in to continue learning.
+                    Sign in or create an account with your Google account to
+                    start learning.
                   </p>
                 </div>
 
-                <form @submit.prevent="loginUser">
-                  <div class="mb-3">
-                    <label
-                      for="username"
-                      class="form-label fw-semibold"
-                    >
-                      Username
-                    </label>
-                    <input
-                      id="username"
-                      v-model="username"
-                      type="text"
-                      class="form-control form-control-lg"
-                      placeholder="Enter your username"
-                      autocomplete="username"
-                      required
-                    >
-                  </div>
-
-                  <div class="mb-4">
-                    <label
-                      for="password"
-                      class="form-label fw-semibold"
-                    >
-                      Password
-                    </label>
-                    <input
-                      id="password"
-                      v-model="password"
-                      type="password"
-                      class="form-control form-control-lg"
-                      placeholder="Enter your password"
-                      autocomplete="current-password"
-                      required
-                    >
-                  </div>
-
-                  <div
-                    v-if="error"
-                    class="alert alert-danger mb-4"
-                    role="alert"
-                  >
-                    {{ error }}
-                  </div>
-
-                  <button
-                    type="submit"
-                    class="btn btn-primary btn-lg w-100"
-                  >
-                    Login
-                  </button>
-                </form>
-
-                <div class="text-center mt-4">
-                  <p class="text-secondary mb-2">
-                    Don't have an account yet?
-                  </p>
-                  <RouterLink
-                    to="/register"
-                    class="btn btn-outline-primary w-100"
-                  >
-                    Create Account
-                  </RouterLink>
-                </div>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-lg w-100"
+                  @click="loginWithGoogle"
+                >
+                  <i class="bi bi-google me-2"></i>
+                  Continue with Google
+                </button>
               </div>
             </div>
           </div>
@@ -94,52 +41,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
 import router from "@/router"
-import { useAuthStore } from "@/stores/chat"
-
 import Appheader from "@/components/Appheader.vue"
 
-const username = ref("")
-const password = ref("")
-const error = ref("")
-
-const authStore = useAuthStore()
-
-async function loginUser() {
-    error.value = ""
-
-    const response = await fetch("http://localhost:8000/login",{
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          username: username.value,
-          password: password.value
-        })
-      }
-    )
-
-    const data = await response.json()
-
-    if (!response.ok) {
-      error.value = data.message || "Login failed"
-      return
-    }
-
-    localStorage.setItem(
-      "token",
-      data.token
-    )
-    authStore.isLoggedIn = true
-
-    console.log("Logged in!")
-    router.push("upload")
-
+function loginWithGoogle() {
+  window.location.href = "http://localhost:8000/login/google"
 }
 
-// for navbar:
 const navItems = [
   {
     label: "Home",

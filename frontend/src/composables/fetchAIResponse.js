@@ -1,10 +1,16 @@
 import { ref } from "vue"
 
+const VALID_CHARACTERS = ["mahiru", "fern", "hayasaka"]
+
 export async function fetchAIResponse(input,onChunk,documentId=null,character=null) {
 
     const response = ref("")
     const token = localStorage.getItem("token")
-    console.log("YUM", character)
+    const storedCharacter = sessionStorage.getItem("selected_character")
+    const selectedCharacter = character || storedCharacter || "mahiru"
+    const safeCharacter = VALID_CHARACTERS.includes(selectedCharacter) ? selectedCharacter : "mahiru"
+
+    console.log("YUM", safeCharacter)
 
     try {
         const res = await fetch("http://127.0.0.1:8000/chat",{
@@ -17,7 +23,7 @@ export async function fetchAIResponse(input,onChunk,documentId=null,character=nu
             message: input,
             // if nothing is given: null is passed
             document_id: documentId, 
-            character: character
+            character: safeCharacter
         })
     })
 

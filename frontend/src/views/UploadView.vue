@@ -94,26 +94,50 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { useRouter } from 'vue-router'
 import { extractPDFText } from '@/composables/extractPDFText'
 import { summarizeText } from '@/composables/summarizeText'
-import { useSummaryStore } from '@/stores/chat'
+import { useAuthStore, useSummaryStore } from '@/stores/chat'
 import Appheader from '@/components/Appheader.vue'
 
 const router = useRouter()
+const route = useRoute()
 const chatStore = useSummaryStore()
+const authStore = useAuthStore()
 const { selectedCharacter } = storeToRefs(chatStore)
+
+onMounted(() => {
+  const token = route.query.token
+
+  if (token) {
+    authStore.login(token, route.query.user)
+
+    window.history.replaceState(
+      {},
+      "",
+      "/upload"
+    )
+  }
+})
 
 async function handlePDF(event) {
   const file = event.target.files[0]
 
   if (!file) return
 
+  const character = selectedCharacter.value || "mahiru"
+
+  sessionStorage.setItem("selected_character", character)
+  chatStore.selectedCharacter = character
+  chatStore.summaryReady = false
+  chatStore.messages = []
+  chatStore.markdown = ""
+
   router.push('/summarize')
 
-  console.log('Character:', selectedCharacter.value)
+  console.log('Character:', character)
   console.log(file.name)
 
   const text = await extractPDFText(file)

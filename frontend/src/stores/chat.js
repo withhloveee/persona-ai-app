@@ -23,5 +23,21 @@ export const useSummaryStore = defineStore("summary", () => {
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     isLoggedIn: !!localStorage.getItem('token')
-  })
+  }),
+  actions: {
+    login(token, user) {
+      localStorage.setItem('token', token)
+
+      if (user) {
+        localStorage.setItem('user', user)
+      }
+
+      this.isLoggedIn = true
+    },
+    logout() {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      this.isLoggedIn = false
+    }
+  }
 })

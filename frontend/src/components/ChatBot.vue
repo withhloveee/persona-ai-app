@@ -122,6 +122,17 @@ const { messages } = storeToRefs(summaryStore)
 const { selectedCharacter } = storeToRefs(summaryStore) 
 
 const userInput = ref('')
+const validCharacters = ["mahiru", "fern", "hayasaka"]
+
+function getSelectedCharacter() {
+  const character = selectedCharacter.value || sessionStorage.getItem("selected_character") || "mahiru"
+
+  if (validCharacters.includes(character)) {
+    return character
+  }
+
+  return "mahiru"
+}
 
 function createAIMessage() {
   return ref({
@@ -192,7 +203,7 @@ watch(
         aiMessage.value.rendered = cleanHTML
       },
       documentId,
-      selectedCharacter.value
+      getSelectedCharacter()
     )
     
   }

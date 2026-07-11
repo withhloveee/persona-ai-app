@@ -5,4 +5,8 @@ import core.routes.auth
 import core.routes.stream
 
 if __name__ == '__main__':
-    app.run(debug=True,port=8000)
+    app.run(
+    host="localhost",
+    port=8000,
+    debug=True
+)

@@ -17,30 +17,31 @@
               </p>
 
               <div class="d-flex flex-column flex-sm-row gap-3">
-                <RouterLink
-                  v-if="authStore.isLoggedIn"
-                  to="/upload"
-                  class="btn btn-primary btn-lg px-4"
-                >
-                  Upload PDF
-                  <i class="bi bi-arrow-right ms-2"></i>
-                </RouterLink>
+  <RouterLink
+    v-if="authStore.isLoggedIn"
+    to="/upload"
+    class="btn btn-primary btn-lg px-4"
+  >
+    Upload PDF
+    <i class="bi bi-arrow-right ms-2"></i>
+  </RouterLink>
 
-                <RouterLink
-                  v-else
-                  to="/register"
-                  class="btn btn-primary btn-lg px-4"
-                >
-                  Start Learning
-                </RouterLink>
+  <template v-else>
+    <RouterLink
+      to="/login"
+      class="btn btn-primary btn-lg px-4"
+    >
+      Start Learning
+    </RouterLink>
 
-                <RouterLink
-                  to="/login"
-                  class="btn btn-outline-secondary btn-lg px-4"
-                >
-                  Sign In
-                </RouterLink>
-              </div>
+    <RouterLink
+      to="/about"
+      class="btn btn-outline-secondary btn-lg px-4"
+    >
+      Learn More
+    </RouterLink>
+  </template>
+</div>
             </div>
 
             <div class="col-lg-4 col-xl-4 hero-art-column">
