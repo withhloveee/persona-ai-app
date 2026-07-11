@@ -44,6 +44,7 @@
 import router from "@/router"
 import Appheader from "@/components/Appheader.vue"
 
+// make a GET request to backend route: (login)
 function loginWithGoogle() {
   window.location.href = "http://localhost:8000/login/google"
 }

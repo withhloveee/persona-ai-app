@@ -1,3 +1,6 @@
+<!-- THIS vue page is called by BACKEND -->
+<!-- THE ROUTE: { "/authorize/google" }, calls its -->
+
 <template>
   <div></div>
 </template>
@@ -12,6 +15,8 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 onMounted(() => {
+
+  // read the {JWT token} from query param.
   const token = route.query.token
   const user = route.query.user
 

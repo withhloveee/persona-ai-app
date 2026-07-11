@@ -10,7 +10,7 @@ export async function fetchAIResponse(input,onChunk,documentId=null,character=nu
     const selectedCharacter = character || storedCharacter || "mahiru"
     const safeCharacter = VALID_CHARACTERS.includes(selectedCharacter) ? selectedCharacter : "mahiru"
 
-    console.log("YUM", safeCharacter)
+    console.log("fetchAIResponse had: ", safeCharacter)
 
     try {
         const res = await fetch("http://127.0.0.1:8000/chat",{

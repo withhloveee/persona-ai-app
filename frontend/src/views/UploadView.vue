@@ -108,20 +108,6 @@ const chatStore = useSummaryStore()
 const authStore = useAuthStore()
 const { selectedCharacter } = storeToRefs(chatStore)
 
-onMounted(() => {
-  const token = route.query.token
-
-  if (token) {
-    authStore.login(token, route.query.user)
-
-    window.history.replaceState(
-      {},
-      "",
-      "/upload"
-    )
-  }
-})
-
 async function handlePDF(event) {
   const file = event.target.files[0]
 
@@ -130,6 +116,8 @@ async function handlePDF(event) {
   const character = selectedCharacter.value || "mahiru"
 
   sessionStorage.setItem("selected_character", character)
+
+  // for safety: { re-assigen the values of store }
   chatStore.selectedCharacter = character
   chatStore.summaryReady = false
   chatStore.messages = []
