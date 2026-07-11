@@ -13,8 +13,3 @@ class Users(db.Model):
     
 with app.app_context():
     db.create_all()
-    admin = Users(username="portal@admin",password=generate_password_hash("admin@02"))
-    
-    if not admin:
-        db.session.add(admin)
-        db.session.commit()
