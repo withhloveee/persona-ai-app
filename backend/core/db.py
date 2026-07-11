@@ -6,7 +6,6 @@ class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     username = db.Column(db.String, unique=True, nullable=False)
-    password = db.Column(db.String, nullable=True)
     google_id = db.Column(db.String, unique=True, nullable=True)
 
     daily_token_limit = db.Column(db.Integer, nullable=False, default=100000)
