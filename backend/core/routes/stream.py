@@ -10,8 +10,10 @@ import json
 from openrouter.errors import TooManyRequestsResponseError
 
 from main import app,db
+from tools.helpers import DEFAULT_PROMPT,SUMMARY_PROMPT,reset_daily_tokens
 
 load_dotenv()
+model = "openai/gpt-oss-120b"
 
 # Importing: { keys }
 API_KEY = os.getenv("API_KEY")
@@ -105,13 +107,11 @@ def result():
         elif character == "mahiru":
             info_prompt = """You are "Mahiru Shina" from the anime "Angel next door" helping a user in doubts from a note."""
 
-        with open("core/routes/rules/prompt.txt","r", encoding="utf-8") as f:
-            default_prompt = f.read()
             
         system_prompt = f"""
 {info_prompt}
 
-{default_prompt}
+{DEFAULT_PROMPT}
 """
 
         # full conversation sent to AI
@@ -131,7 +131,7 @@ def result():
 
             try:
                 stream = client.chat.send(
-                    model="openrouter/free",
+                    model=model,
                     messages=messages,
                     stream=True,
                     max_tokens=1024
@@ -199,6 +199,8 @@ def summarize():
     if not user:
         return {"Error":"User not found."}
     
+    reset_daily_tokens(user)
+    
     if user.daily_tokens_used >= user.daily_token_limit:
         return {"Error":"Out of Token's for today."}, 429
 
@@ -212,64 +214,17 @@ def summarize():
     print("CREATION:",document_id)
     
     def generate():
-
         full_summary = ""
         
         with OpenRouter(api_key=API_KEY) as client:
             total_tokens = 0
             
             stream = client.chat.send(
-                model="openrouter/free",
+                model=model,
                 messages=[
                     {
                         "role": "system",
-                        "content": """
-You are a markdown summarizer.
-
-Convert the user's text into clean markdown notes.
-
-Format:
-# Title
-
-## Overview
-
-## Key Points
-
-## Important Concepts
-
-## Final Takeaway
-
-Rules:
-- Return ONLY markdown
-- Keep it concise
-- Use bullets
-
-Math formatting rules:
-- Use $...$ for inline equations
-- Use $$...$$ for block equations
-- Never use \\( \\)
-- Never use \\[ \\]
-- Always complete equations fully
-- Always use valid LaTeX syntax
-- Always close brackets and braces
-- Use \\frac{{a}}{{b}} for fractions
-- Use \\int x^2\\,dx formatting for integrals
-
-Examples:
-
-Inline:
-$f(x)=x^2$
-
-Block:
-$$
-\\int x^2\\,dx = \\frac{{x^3}}{{3}} + C
-$$
-
-Logarithm:
-$$
-\\int \\frac{{1}}{{x}}\\,dx = \\ln |x| + C
-$$
-"""
+                        "content": SUMMARY_PROMPT
                     },
                     {
                         "role": "user",

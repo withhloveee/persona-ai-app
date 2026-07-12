@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from main import app,db
 from werkzeug.security import generate_password_hash
+from datetime import date
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -8,8 +9,11 @@ class Users(db.Model):
     username = db.Column(db.String, unique=True, nullable=False)
     google_id = db.Column(db.String, unique=True, nullable=True)
 
+    last_token_reset = db.Column(db.Date,default=date.today)
+    
     daily_token_limit = db.Column(db.Integer, nullable=False, default=100000)
     daily_tokens_used = db.Column(db.Integer, nullable=False, default=0)
+    
     
 with app.app_context():
     db.create_all()
