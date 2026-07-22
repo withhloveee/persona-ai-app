@@ -24,7 +24,7 @@
           v-if="message.role === 'user'"
           class="d-flex justify-content-end"
         >
-          <div class="bg-primary text-white p-2 rounded">
+          <div class="bg-primary text-white p-2 rounded user-message">
             {{ message.content }}
           </div>
         </div>
@@ -32,8 +32,14 @@
         <!-- AI -->
         <div
           v-else
-          class="d-flex justify-content-start"
+          class="d-flex justify-content-start align-items-start gap-2 ai-message-row"
         >
+          <div
+            class="ai-avatar"
+            :class="`ai-avatar-${getSelectedCharacter()}`"
+            aria-hidden="true"
+          ></div>
+
           <div
             v-if="message.loading"
             class="typing-loader"
@@ -46,9 +52,8 @@
           <!-- REAL MESSAGE -->
           <div
             v-else
-            class="markdown-body rounded"
+            class="markdown-body rounded ai-message"
             v-html="message.rendered"
-            style="padding: 12px;"
           ></div>
         </div>
 
@@ -212,6 +217,71 @@ watch(
 </script>
 
 <style scoped>
+.ai-avatar {
+  width: 2.35rem;
+  height: 2.35rem;
+  flex: 0 0 2.35rem;
+  border-radius: 50%;
+  background-color: #eef1f6;
+  background-position: center;
+  background-size: cover;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(20, 33, 61, 0.12);
+}
+
+.ai-avatar-mahiru {
+  background-image: url('@/assets/mahiru.jpg');
+}
+
+.ai-avatar-fern {
+  background-image: url('@/assets/fern.jpg');
+}
+
+.ai-avatar-hayasaka {
+  background-image: url('@/assets/hayasaka.jpg');
+}
+
+.ai-message {
+  max-width: min(100%, 46rem);
+  min-width: 0;
+  padding: 12px;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.ai-message-row {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.user-message {
+  max-width: min(100%, 46rem);
+  overflow-wrap: anywhere;
+}
+
+.chat-scroll {
+  overflow-x: hidden;
+}
+
+.ai-message :deep(pre) {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.ai-message :deep(table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.ai-message :deep(img),
+.ai-message :deep(video),
+.ai-message :deep(canvas) {
+  max-width: 100%;
+  height: auto;
+}
+
 /* Styles for the loading effect (AI made) */
 .typing-loader {
   display: flex;

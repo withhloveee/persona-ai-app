@@ -67,6 +67,28 @@ h6,
   font-family: monospace;
 } */
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 112, 132, 0.22) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 112, 132, 0.22);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 112, 132, 0.36);
+}
 
 .chat-scroll {
   overflow-y: auto;
@@ -82,7 +104,7 @@ h6,
 
 
 .chat-scroll::-webkit-scrollbar-thumb {
-  background: rgba(136, 136, 136, 0.15);
+  background: rgba(100, 112, 132, 0.22);
   border-radius: 999px;
 }
 

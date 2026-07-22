@@ -14,11 +14,17 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: {
+        title: 'Talk2Learn - Home'
+      }
     },
     {
       path:'/upload',
       name:'upload',
-      component: UploadView
+      component: UploadView,
+      meta: {
+      title: 'Upload PDF - Talk2Learn'
+    }
     },
     {
       path:'/summarize',
@@ -27,7 +33,10 @@ const router = createRouter({
     },{
       path:'/login',
       name:'login',
-      component:LoginView
+      component:LoginView,
+      meta: {
+        title: 'Login - Talk2Learn'
+    }
     },{
       path:'/auth/callback',
       name:'auth-callback',
@@ -35,9 +44,16 @@ const router = createRouter({
     },{
       path:'/about',
       name:'about',
-      component:AboutView
+      component:AboutView,
+      meta: {
+      title: 'About - Talk2Learn'
+    }
     }
   ],
+})
+
+router.afterEach((to) => {
+  document.title = to.meta.title || 'Talk2Learn'
 })
 
 export default router

@@ -11,6 +11,13 @@
         <!-- LEFT -->
         <h5 class="site-title m-0">
           <router-link to="/" class="site-link">
+            <span class="brand-mark" aria-hidden="true">
+              <img
+                src="/new.png"
+                alt=""
+                class="brand-mark-img"
+              >
+            </span>
             <h3 class="brand-logo">Talk2learn</h3>
           </router-link>
         </h5>
@@ -169,6 +176,9 @@ function logout() {
 }
 
 .site-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
   color: inherit;
   text-decoration: none;
 }
@@ -189,6 +199,27 @@ function logout() {
   letter-spacing: -1px;
 
   user-select: none;
+}
+
+.brand-mark {
+  width: 2.4rem;
+  height: 2.04rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 0.55rem;
+  background: #ffffff;
+  transform: translateY(3px);
+}
+
+.brand-mark-img {
+  width: 185%;
+  height: 185%;
+  object-fit: cover;
+  object-position: center 45%;
+  display: block;
 }
 
 @media (max-width: 767.98px) {
