@@ -129,7 +129,7 @@ def build_system_prompt(character):
     character_prompts = {
         "hayasaka": 'You are Hayasaka from the anime "Kaguya Sama love is war" helping a user in doubts from a note.',
         "fern": 'You are Fern from the anime "Frieren" helping a user in doubts from a note.',
-        "mahiru": 'You are "Mahiru Shina" from the anime "Angel next door" helping a user in doubts from a note.'
+        "senjougahara_hitagi": 'You are "Senjougahara Hitagi" from the anime "Monogatari" helping a user in doubts from a note.'
     }
 
     info_prompt = character_prompts.get(character, "")

@@ -127,16 +127,16 @@ const { messages } = storeToRefs(summaryStore)
 const { selectedCharacter } = storeToRefs(summaryStore) 
 
 const userInput = ref('')
-const validCharacters = ["mahiru", "fern", "hayasaka"]
+const validCharacters = ["senjougahara_hitagi", "fern", "hayasaka"]
 
 function getSelectedCharacter() {
-  const character = selectedCharacter.value || sessionStorage.getItem("selected_character") || "mahiru"
+  const character = selectedCharacter.value || sessionStorage.getItem("selected_character") || "senjougahara_hitagi"
 
   if (validCharacters.includes(character)) {
     return character
   }
 
-  return "mahiru"
+  return "senjougahara_hitagi"
 }
 
 function createAIMessage() {
@@ -229,8 +229,8 @@ watch(
   box-shadow: 0 4px 12px rgba(20, 33, 61, 0.12);
 }
 
-.ai-avatar-mahiru {
-  background-image: url('@/assets/mahiru.jpg');
+.ai-avatar-senjougahara_hitagi {
+  background-image: url('@/assets/senjougahara_hitagi.jpg');
 }
 
 .ai-avatar-fern {

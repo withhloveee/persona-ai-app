@@ -21,15 +21,15 @@
 
           <label
             class="character-card-option"
-            :class="{ active: selectedCharacter === 'mahiru' }"
+            :class="{ active: selectedCharacter === 'senjougahara_hitagi' }"
           >
             <input
               type="radio"
-              value="mahiru"
+              value="senjougahara_hitagi"
               v-model="selectedCharacter"
             >
-            <div class="character-emoji"><img src="@/assets/mahiru.jpg" alt="" width="120px"></div>
-            <div class="character-name">Mahiru</div>
+            <div class="character-emoji"><img src="@/assets/senjougahara_hitagi.jpg" alt="" width="120px"></div>
+            <div class="character-name">Senjougahara</div>
           </label>
 
           <label
@@ -113,7 +113,7 @@ async function handlePDF(event) {
 
   if (!file) return
 
-  const character = selectedCharacter.value || "mahiru"
+  const character = selectedCharacter.value || "senjougahara_hitagi"
 
   sessionStorage.setItem("selected_character", character)
 

@@ -8,7 +8,7 @@ export const useSummaryStore = defineStore("summary", () => {
 
     const summaryReady = ref(false)
     const messages = ref([])
-    const selectedCharacter = ref("mahiru")
+    const selectedCharacter = ref("senjougahara_hitagi")
 
 
     return {

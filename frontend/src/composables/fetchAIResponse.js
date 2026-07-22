@@ -1,14 +1,14 @@
 import { ref } from "vue"
 
-const VALID_CHARACTERS = ["mahiru", "fern", "hayasaka"]
+const VALID_CHARACTERS = ["senjougahara_hitagi", "fern", "hayasaka"]
 
 export async function fetchAIResponse(input,onChunk,documentId=null,character=null) {
 
     const response = ref("")
     const token = localStorage.getItem("token")
     const storedCharacter = sessionStorage.getItem("selected_character")
-    const selectedCharacter = character || storedCharacter || "mahiru"
-    const safeCharacter = VALID_CHARACTERS.includes(selectedCharacter) ? selectedCharacter : "mahiru"
+    const selectedCharacter = character || storedCharacter || "senjougahara_hitagi"
+    const safeCharacter = VALID_CHARACTERS.includes(selectedCharacter) ? selectedCharacter : "senjougahara_hitagi"
 
     console.log("fetchAIResponse had: ", safeCharacter)
 
