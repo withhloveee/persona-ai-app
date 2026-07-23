@@ -1,5 +1,6 @@
 from flask import Response, request, stream_with_context
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from core.db import VoiceLine
 
 from core.services.chat_service import (
     create_document_id,

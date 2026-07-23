@@ -13,7 +13,13 @@ class Users(db.Model):
     
     daily_token_limit = db.Column(db.Integer, nullable=False, default=100000)
     daily_tokens_used = db.Column(db.Integer, nullable=False, default=0)
-    
+
+class VoiceLine(db.Model):
+    __tablename__ = "voicelines"
+
+    id = db.Column(db.Integer, primary_key=True)
+    character_id = db.Column(db.Integer, nullable=False)
+    text = db.Column(db.Text, nullable=False)
     
 with app.app_context():
     db.create_all()
