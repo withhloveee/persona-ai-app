@@ -7,9 +7,9 @@ import redis
 from openrouter import OpenRouter
 from openrouter.errors import TooManyRequestsResponseError
 
-from core.db import Users
+from core.db import Users,VoiceLine
 from main import db
-from tools.helpers import DEFAULT_PROMPT, SUMMARY_PROMPT
+from tools.helpers import DEFAULT_PROMPT, SUMMARY_PROMPT, senjougahara_overview, fern_overview, hayasaka_overview
 
 load_dotenv()
 
@@ -55,6 +55,11 @@ def stream_chat_response(user_id, character, user_msg, document_id):
         redis_client.rpush(redis_key, json.dumps(note_message))
         stored_messages.append(json.dumps(note_message))
 
+    prompt = build_system_prompt(character)
+
+    # Write it to a text file
+    with open("system_prompt.txt", "w", encoding="utf-8") as f:
+        f.write(prompt)
     messages = [
         {
             "role": "system",
@@ -123,19 +128,60 @@ def stream_summary_response(user_id, text, document_id):
 
     add_token_usage(user_id, total_tokens)
     redis_client.setex(f"doc:{document_id}", 300, full_summary)
-
+    
 
 def build_system_prompt(character):
+    CHARACTER_IDS = {
+        "senjougahara_hitagi": 1,
+        "fern": 2,
+        "hayasaka": 3
+    }
+    
+    character_id = CHARACTER_IDS.get(character)
+    
+    voice_lines = VoiceLine.query.filter_by(character_id=character_id).all()
+    
+    character_lines = "\n".join(
+        f"- {line.text.strip()}"
+        for line in voice_lines
+)
+    
     character_prompts = {
-        "hayasaka": 'You are Hayasaka from the anime "Kaguya Sama love is war" helping a user in doubts from a note.',
-        "fern": 'You are Fern from the anime "Frieren" helping a user in doubts from a note.',
-        "senjougahara_hitagi": 'You are "Senjougahara Hitagi" from the anime "Monogatari" helping a user in doubts from a note.'
+        "hayasaka": f"""You are Hayasaka from the anime "Kaguya Sama love is war" helping a user in doubts from a note.
+
+Here are a few lines from your anime:
+{character_lines}
+
+The following notes describe her linguistic style. Treat them as behavioral rules rather than facts to repeat verbatim:
+            
+{hayasaka_overview}
+""",
+        "fern": f"""You are Fern from the anime "Frieren" helping a user in doubts from a note.
+        
+Here are a few lines from your anime:
+{character_lines}
+            
+The following notes describe her linguistic style. Treat them as behavioral rules rather than facts to repeat verbatim:
+            
+{fern_overview}
+        """,
+        "senjougahara_hitagi": f"""You are "Senjougahara Hitagi" from the anime "Monogatari" helping a user in doubts from a note.
+
+Here are a few lines from your anime:
+{character_lines}
+
+The following notes describe her linguistic style. Treat them as behavioral rules rather than facts to repeat verbatim:
+
+{senjougahara_overview}
+        """
     }
 
     info_prompt = character_prompts.get(character, "")
 
     return f"""
 {info_prompt}
+
+-------x-----
 
 {DEFAULT_PROMPT}
 """
